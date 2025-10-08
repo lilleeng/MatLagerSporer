@@ -25,7 +25,7 @@ public class Test {
         String fileName = "java implementation/database.csv";
         List<List<String>> records = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(COMMA_DELIMITER);
@@ -40,8 +40,12 @@ public class Test {
 
         for (List<String> row : records) {
             // System.out.println(row.size());
-            System.out.printf("%s\t%s\t%s\t%s\n", row.get(0), row.get(1), row.get(2), row.get(3));
+            System.out.printf("%-15s%-15s%-15s%-15s\n", row.get(0), row.get(1), row.get(2), row.get(3));
         }
+
+
+
+
         
         // File file = new File("database.csv");
         // BufferedReader reader = new BufferedReader(

@@ -1,12 +1,22 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class DataBase {
     
+    private final String dataBaseFilePath = "java implementation/database.csv";
+    private final String COMMA_DELIMITER = ",";
+
     private boolean dataBaseHasUpdated = false;
     private ArrayList<FoodItem> dataBase;
     private ArrayList<FoodItem> lceSort;
@@ -23,12 +33,39 @@ public class DataBase {
     }
 
     private void loadDataBaseFromCSV() {
-        // TODO 
-        updateECAValues();
+        List<List<String>> records = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataBaseFilePath), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(COMMA_DELIMITER);
+                records.add(Arrays.asList(values));
+            }
+        }
+        catch (Exception e) {System.out.println(e);}
+
+        for (List<String> row : records) {
+            // make FoodItem object --> add to db
+            String name = row.get(0);
+            String[] dayMonthYear = row.get(1).split(".");
+            LocalDate expDate = LocalDate.of(
+                Integer.valueOf(dayMonthYear[2]),
+                Integer.valueOf(dayMonthYear[1]),
+                Integer.valueOf(dayMonthYear[0]));
+            String[] dayMonthYear2 = row.get(2).split(".");
+            LocalDate purDate = LocalDate.of(
+                Integer.valueOf(dayMonthYear2[2]),
+                Integer.valueOf(dayMonthYear2[1]),
+                Integer.valueOf(dayMonthYear2[0]));
+            double eca = Double.valueOf(row.get(3));
+            dataBase.add(new FoodItem(name, expDate, eca, purDate));
+        }
+
+        bootupUpdateECAValues();  //done last
     }
 
-    private void updateECAValues() {
-        // TODO Auto-generated method stub
+    private void bootupUpdateECAValues() {
+        // TODO
     }
 
     public void saveChanges() {
